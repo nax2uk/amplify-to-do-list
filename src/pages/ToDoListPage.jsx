@@ -1,11 +1,11 @@
 import React, { useEffect, useContext } from 'react';
 import * as utils from '../utils/utils';
 import TasksContext from '../context/tasks/tasksContext';
-import ToDo from './ToDo';
-import './../css/ToDoList.css';
-import NewToDoForm from './NewToDoForm';
+import ToDo from '../components/ToDo';
+import '../css/ToDoList.css';
+import NewToDoForm from '../components/NewToDoForm';
 
-function ToDoList() {
+function ToDoListPage() {
 
     /*** TASKS ***/
     const tasksContext = useContext(TasksContext);
@@ -35,4 +35,4 @@ function ToDoList() {
 }
 
 
-export default ToDoList;
+export default ToDoListPage;
