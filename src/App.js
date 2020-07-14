@@ -20,6 +20,13 @@ function App() {
     retrieveData();
 
   }, []);
+  const handleSignOut = async () => {
+    try {
+      await Auth.signOut()
+    } catch (error) {
+      console.error("Error signing out user");
+    }
+  }
 
   const handleAuth = useCallback(({ payload }) => {
     switch (payload.event) {
@@ -42,7 +49,7 @@ function App() {
     <Authenticator theme={theme} />
     :
     <Router>
-      <NavBar user={user} />
+      <NavBar user={user} handleSignOut={handleSignOut} />
       <Switch>
         <Route exact path="/" component={ToDoListPage} />
         <Route path="/profile" component={ProfilePage} />
