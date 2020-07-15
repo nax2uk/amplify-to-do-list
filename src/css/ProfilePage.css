@@ -1,0 +1,118 @@
+.profile-box{
+    margin: 100px auto;
+    box-shadow: -10px -10px 0px 0px rgba(100, 100, 100, 0.1);
+    border: 1px solid #999;
+    background: #fff;
+    width: 600px;
+    min-height: 300px;
+
+}
+.profile-content{
+    position:relative;
+    padding-top:20px;
+}
+
+.profile-header{
+    padding:20px;
+    text-align:center;
+    font-size:1.2rem;
+    background-color: #68b8c1;
+    color:#fff;
+}
+.profile-info, .profile-info-delete{
+    position: relative;
+    display:flex;
+    justify-content: space-between;
+    align-items: center;
+    line-height: 1.5rem;
+    font-size:1rem;
+    padding: 10px;  
+}
+.profile-info-delete{
+    background-color: #FEE8E6;
+}
+.profile-info-title{
+    position: relative;
+  
+}
+
+.profile-info-detail {
+    position:absolute;
+    left:150px;
+   
+}
+.profile-info-button{
+    position:absolute;
+    padding:5px;
+    right:5px;
+}
+.profile-info-button button{
+    padding:10px 20px;
+    background-color: #68b8c1;
+    color:#fff;
+    font-size:1rem;
+    border-radius: 5px;
+    border:none;
+    outline:none;
+    cursor: pointer;
+}
+
+.profile-info-button button:hover{
+    background:#2a8a92;
+}
+
+.profile-info-button button.btn-delete{
+    background-color:#f44336;
+}
+
+.profile-info-button button:hover.btn-delete{
+    background-color:#F55B4F;
+}
+.verified{
+    font-size:0.8rem;
+}
+
+@media screen and (max-width: 768px){
+    .profile-box{
+        width:450px;
+    }
+    .profile-header{
+        font-size:1rem;
+    }
+    .profile-info, .profile-info-delete{
+        font-size:0.9rem;
+    }
+    .profile-info-button button{
+        padding: 10px 15px;
+        font-size:0.9rem;
+    }
+    .verified{
+        font-size:0.5rem;
+    }
+}
+
+@media screen and (max-width: 450px){
+
+    
+    .profile-box{
+        width:300px;
+        margin: 50px auto;
+    }
+    .profile-header{
+        font-size:0.8rem;
+    }
+    .profile-info, .profile-info-delete{
+        font-size:0.65rem;
+    }
+    .profile-info-detail {
+        left:100px;
+    }
+    .verified{
+        font-size:0.3rem;
+    }
+ 
+    .profile-info-button button{
+        padding: 5px 10px;
+        font-size:0.7rem;
+    }
+}
