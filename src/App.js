@@ -11,6 +11,7 @@ import { Auth, Hub } from 'aws-amplify';
 
 function App() {
   const [user, setUser] = useState(null);
+  const [userAttr, setUserAttr] = useState(null);
 
   const getUserData = useCallback(() => {
     const retrieveData = async () => {
@@ -20,6 +21,13 @@ function App() {
     retrieveData();
 
   }, []);
+
+  const getUserAttr = async authUserData => {
+    const attrArr = await Auth.userAttributes(authUserData);
+    const attrObj = Auth.attributesToObject(attrArr);
+    setUserAttr(attrObj);
+  }
+
   const handleSignOut = async () => {
     try {
       await Auth.signOut()
@@ -38,7 +46,16 @@ function App() {
 
   }, [getUserData]);
 
+  // get userAttribute when there is a user
+  useEffect(() => {
 
+    if (user !== null && userAttr === null) {
+      getUserAttr(user);
+      console.log(userAttr);
+    }
+  }, [user, userAttr]);
+
+  //componentDidMount/Unmount
   useEffect(() => {
     getUserData();
     Hub.listen('auth', handleAuth);
@@ -52,10 +69,12 @@ function App() {
       <NavBar user={user} handleSignOut={handleSignOut} />
       <Switch>
         <Route exact path="/" component={ToDoListPage} />
-        <Route path="/profile" component={ProfilePage} />
+        <Route
+          path="/profile"
+          component={() => <ProfilePage user={user} userAttr={userAttr} />}
+        />
       </Switch>
     </Router>;
 }
 
-//export default withAuthenticator(App, true, [], null, theme);
 export default App;

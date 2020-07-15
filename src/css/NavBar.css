@@ -1,9 +1,11 @@
 nav {
+  
     display:flex;
     margin: 10px;
     padding:20px;
     align-items: center;
     background-color: #fff;
+    min-width:90%;
 
 }
 
