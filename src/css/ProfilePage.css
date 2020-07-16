@@ -69,6 +69,8 @@
     background-color:#F55B4F;
 }
 .verified{
+    position:relative;
+    margin-right:150px;
     font-size:0.8rem;
 }
 

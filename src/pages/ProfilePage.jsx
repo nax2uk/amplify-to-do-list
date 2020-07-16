@@ -9,28 +9,35 @@ const ProfilePage = ({ user, userAttr }) => {
     const [email, setEmail] = useState(userAttr?.email);
     const [modalContent, setModalContent] = useState("");
     //const [verificationForm, setVerificationForm] = useState(false);
-    const [verificationCode, setVerificationCode] = useState("abc");
+    const [verificationCode, setVerificationCode] = useState("kkk");
 
-    const handleVCodeChange = (e) => {
-        console.log("handle");
-        setVerificationCode("bcd");
-    }
-
+    /*  const handleVCodeChange = (e) => {
+           console.log("handle");
+           setVerificationCode("bcd");
+       }
+   */
     const submitTest = (e) => {
-        console.log("submitTest");
-
+        e.preventDefault();
+        modalRef.current.close();
+        console.log(e.target.verificationCode.value);
+        setVerificationCode(e.target.verificationCode.value);
     }
+
     const handleEditEmail = (e) => {
         e.preventDefault();
-        //editEmail();
-        setModalContent(
-            <>
-                <h3>Verification code has been sent to {email} </h3>
-                <input type="text" name="code" value={verificationCode} onChange={handleVCodeChange} />
-                <button onClick={submitTest}>Submit</button>
-            </>
-        )
-        modalRef.current.open();
+        editEmail();
+        /*     setModalContent(
+                 <>
+                     <h3>Verification code has been sent to {email} </h3>
+                     <form onSubmit={submitTest}>
+                         <label htmlFor="verificationCode">Enter Verification Code to verify email</label>
+                         <input type="text" name="verificationCode" />
+                         <button type="submit">Submit</button>
+                     </form>
+                 </>
+             )
+             modalRef.current.open();
+             */
     }
 
     const handleEmailChange = (e) => {
@@ -38,9 +45,8 @@ const ProfilePage = ({ user, userAttr }) => {
 
     }
 
-
-
     const editEmail = async () => {
+        console.log("inEditEmail");
         try {
             const updatedAttr = {
                 email,
@@ -62,22 +68,28 @@ const ProfilePage = ({ user, userAttr }) => {
     }
 
     const sendVerificationCode = async attr => {
+        console.log("inSend verification code");
         await Auth.verifyCurrentUserAttribute(attr);
         //setVerificationForm(true);
         setModalContent(
             <>
                 <h3>Verification code has been sent to {email} </h3>
-                <label htmlFor="verificationCode">Enter Verification Code</label>
-                <input type="text" name="verificationCode" value={verificationCode} onChange={handleVCodeChange} />
-                <button onClick={submitVerificationCode}>Submit</button>
+                <form onSubmit={submitVerificationCode}>
+                    <label htmlFor="verificationCode">Enter Verification Code</label>
+                    <input type="text" name="verificationCode" />
+                    <button type="submit">Submit</button>
+                </form>
             </>
         )
         modalRef.current.open();
     };
 
-    const submitVerificationCode = async () => {
+    const submitVerificationCode = async (event) => {
+        console.log("inSubmitVerificationCode")
         modalRef.current.close();
-        setModalContent("");
+
+        setVerificationCode(event.target.verificationCode.value);
+        console.log(verificationCode);
         try {
             const result = await Auth.verifyCurrentUserAttributeSubmit(
                 email,
@@ -108,7 +120,7 @@ const ProfilePage = ({ user, userAttr }) => {
                     <div className="profile-box">
                         <div className="profile-header">
                             Profile
-                </div>
+                    </div>
                         <div className="profile-content">
                             <div className="profile-info">
                                 <div className="profile-info-title">Username</div>

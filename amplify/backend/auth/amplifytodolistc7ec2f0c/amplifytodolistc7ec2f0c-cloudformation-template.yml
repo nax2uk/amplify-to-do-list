@@ -136,7 +136,7 @@ Resources:
     Properties:
       UserPoolName: !If [ShouldNotCreateEnvResources, !Ref userPoolName, !Join ['',[!Ref userPoolName, '-', !Ref env]]]
       
-      Schema: 
+            Schema: 
         
         -
           Name: email
