@@ -66,7 +66,7 @@ function App() {
     <Authenticator theme={theme} />
     :
     <Router>
-      <NavBar user={user} handleSignOut={handleSignOut} />
+      <NavBar handleSignOut={handleSignOut} />
       <Switch>
         <Route exact path="/" component={ToDoListPage} />
         <Route

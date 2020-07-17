@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink, Link } from 'react-router-dom';
 import '../css/NavBar.css';
-const NavBar = ({ user, handleSignOut }) => {
+const NavBar = ({ handleSignOut }) => {
     return (
 
         <nav class="navbar navbar-expand-xxl navbar-light bg-light">
