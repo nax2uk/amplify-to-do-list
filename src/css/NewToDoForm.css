@@ -64,3 +64,53 @@
 .closebtn:hover {
   color: black;
 }
+
+@media screen and (max-width: 768px){
+  .NewTodoForm label {
+    font-size: 1.1rem;
+  }
+.NewTodoForm input,
+.NewTodoForm button {
+  font-size:0.85rem;
+  height: 2.0rem;
+}
+  .closebtn {
+    font-size:10px;
+  }
+  .alert {
+    font-size:0.8rem;
+  }
+}
+@media screen and (max-width: 450px){
+  .NewTodoForm label {
+    font-size: 0.8rem;
+  }
+  .NewTodoForm input,
+  .NewTodoForm button {
+  font-size:0.40rem;
+  height: 1.6rem;
+  }
+  .closebtn {
+    font-size:12px;
+  }
+  .alert {
+    font-size:0.5rem;
+  }
+}
+
+@media screen and (max-width: 320px){
+  .NewTodoForm label {
+    font-size: 0.75rem;
+  }
+.NewTodoForm input,
+.NewTodoForm button {
+font-size:0.40rem;
+  height: 1.6rem;
+}
+  .closebtn {
+    font-size:10px;
+  }
+  .alert {
+    font-size:0.45rem;
+  }
+}

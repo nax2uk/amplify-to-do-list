@@ -2,6 +2,7 @@
     margin: 100px auto;
     box-shadow: -10px -10px 0px 0px rgba(100, 100, 100, 0.1);
     border: 1px solid #999;
+    border-radius:5px;
     background: #fff;
     width: 600px;
     min-height: 300px;
@@ -16,7 +17,7 @@
     padding:20px;
     text-align:center;
     font-size:1.2rem;
-    background-color: #68b8c1;
+    background-color: #2a8a92;
     color:#fff;
 }
 .profile-info, .profile-info-delete{
@@ -47,10 +48,11 @@
     right:5px;
 }
 .profile-info-button button{
+    width:80px;
     padding:7px 15px;
     background-color: #68b8c1;
     color:#fff;
-    font-size:1rem;
+    font-size:0.8rem;
     border-radius: 5px;
     border:none;
     outline:none;
@@ -68,11 +70,11 @@
 .profile-info-button button:hover.btn-delete{
     background-color:#F55B4F;
 }
-.verified{
-    position:relative;
-    margin-right:150px;
-    font-size:0.8rem;
+.profile-info input{
+    font-size:0.9rem;
+    padding:3px;
 }
+
 
 @media screen and (max-width: 768px){
     .profile-box{
@@ -85,12 +87,15 @@
         font-size:0.9rem;
     }
     .profile-info-button button{
-        padding: 10px 15px;
-        font-size:0.9rem;
+        width:70px;
+        padding: 7px 10px;
+        font-size:0.8rem;
     }
-    .verified{
-        font-size:0.5rem;
+    .profile-info input{
+        font-size:0.8rem;
+      
     }
+
 }
 
 @media screen and (max-width: 450px){
@@ -106,15 +111,16 @@
     .profile-info, .profile-info-delete{
         font-size:0.65rem;
     }
+    .profile-info input{
+        font-size:0.65rem;
+    }
     .profile-info-detail {
         left:100px;
     }
-    .verified{
-        font-size:0.3rem;
-    }
- 
+
     .profile-info-button button{
-        padding: 5px 10px;
-        font-size:0.7rem;
+        width:50px;
+        padding: 5px;
+        font-size:0.6rem;
     }
 }

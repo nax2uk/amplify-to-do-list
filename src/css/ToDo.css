@@ -12,6 +12,7 @@
 }
 .Todo-task {
   position: relative;
+  font-size:1.1rem;
   transition: opacity 0.4s linear;
 }
 .Todo.completed {
@@ -126,5 +127,66 @@ background:#7BC1C9
 
 .closebtn:hover {
   color: black;
+}
+@media screen and (max-width: 768px){
+  .Todo-task {
+    font-size:1rem;
+  }
+  .Todo-buttons button {
+
+    font-size: 0.6em;
+  }
+.Todo-edit-form input,
+.Todo-edit-form button {
+  height:1.2rem;
+}
+.Todo-edit-form input{
+  font-size:0.6em;
+}
+.Todo-edit-form button {
+
+  padding: 5px 10px;
+  font-size:0.6rem;
+}
+  .alert {
+    font-size:0.5em;
+    padding:5px;
+  }
+  .closebtn {
+    font-size: 10px;
+  }
+  .Todo.completed .Todo-task:before {
+    height:2px;
+  }
+}
+
+
+@media screen and (max-width: 450px){
+  .Todo-task {
+    font-size:0.6rem;
+  }
+  .Todo-buttons button {
+
+    font-size: 0.6em;
+  }
+.Todo-edit-form input,
+.Todo-edit-form button {
+  height:1.2rem;
+}
+.Todo-edit-form input{
+  font-size:0.6em;
+}
+.Todo-edit-form button {
+
+  padding: 5px 10px;
+  font-size:0.6rem;
+}
+  .alert {
+    font-size:0.5em;
+    padding:5px;
+  }
+  .closebtn {
+    font-size: 10px;
+  }
 }
 

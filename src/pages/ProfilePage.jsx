@@ -2,51 +2,26 @@ import React, { useState, useRef } from 'react';
 import Modal from '../components/Modal';
 import '../css/ProfilePage.css';
 import { Auth } from 'aws-amplify';
+import { useEffect } from 'react';
+import { useCallback } from 'react';
 
 const ProfilePage = ({ user, userAttr }) => {
     const modalRef = useRef();
 
     const [email, setEmail] = useState(userAttr?.email);
     const [modalContent, setModalContent] = useState("");
-    //const [verificationForm, setVerificationForm] = useState(false);
-    const [verificationCode, setVerificationCode] = useState("kkk");
-
-    /*  const handleVCodeChange = (e) => {
-           console.log("handle");
-           setVerificationCode("bcd");
-       }
-   */
-    const submitTest = (e) => {
-        e.preventDefault();
-        modalRef.current.close();
-        console.log(e.target.verificationCode.value);
-        setVerificationCode(e.target.verificationCode.value);
-    }
+    const [verificationCode, setVerificationCode] = useState("");
 
     const handleEditEmail = (e) => {
         e.preventDefault();
         editEmail();
-        /*     setModalContent(
-                 <>
-                     <h3>Verification code has been sent to {email} </h3>
-                     <form onSubmit={submitTest}>
-                         <label htmlFor="verificationCode">Enter Verification Code to verify email</label>
-                         <input type="text" name="verificationCode" />
-                         <button type="submit">Submit</button>
-                     </form>
-                 </>
-             )
-             modalRef.current.open();
-             */
     }
 
     const handleEmailChange = (e) => {
         setEmail(e.target.value);
-
     }
 
     const editEmail = async () => {
-        console.log("inEditEmail");
         try {
             const updatedAttr = {
                 email,
@@ -55,7 +30,6 @@ const ProfilePage = ({ user, userAttr }) => {
             console.log(result);
             if (result === "SUCCESS") {
                 sendVerificationCode('email');
-
             }
         } catch (error) {
             console.error(error);
@@ -68,16 +42,14 @@ const ProfilePage = ({ user, userAttr }) => {
     }
 
     const sendVerificationCode = async attr => {
-        console.log("inSend verification code");
         await Auth.verifyCurrentUserAttribute(attr);
-        //setVerificationForm(true);
         setModalContent(
             <>
                 <h3>Verification code has been sent to {email} </h3>
                 <form onSubmit={submitVerificationCode}>
                     <label htmlFor="verificationCode">Enter Verification Code</label>
                     <input type="text" name="verificationCode" />
-                    <button type="submit">Submit</button>
+                    <button>Submit</button>
                 </form>
             </>
         )
@@ -85,33 +57,41 @@ const ProfilePage = ({ user, userAttr }) => {
     };
 
     const submitVerificationCode = async (event) => {
-        console.log("inSubmitVerificationCode")
-        modalRef.current.close();
-
-        setVerificationCode(event.target.verificationCode.value);
-        console.log(verificationCode);
-        try {
-            const result = await Auth.verifyCurrentUserAttributeSubmit(
-                email,
-                verificationCode
-            );
-            setModalContent(
-                <>
-                    <h2>Success</h2>
-                    <p>Email has been successfully verified to {result.toLowerCase()}</p>
-                </>
-            );
-            modalRef.current.open();
-        } catch (error) {
-            setModalContent(
-                <>
-                    <h2>Error</h2>
-                    <p>`${error.message || "Error updating email"}`</p>
-                </>
-            );
-            modalRef.current.open();
-        }
+        event.preventDefault();
+        setVerificationCode(event.target.verificationCode.value.trim());
+        // verificationCode change triggers editEmail()
     }
+
+    const verifyEmail = useCallback(() => {
+        Auth.verifyCurrentUserAttributeSubmit(
+            'email',
+            verificationCode
+        )
+            .then(result => {
+                setModalContent(
+                    <>
+                        <h2>Success</h2>
+                        <p>Email has been successfully verified to {result.toLowerCase()}</p>
+                    </>
+                );
+                modalRef.current.open();
+            }).catch((error) => {
+                setModalContent(
+                    <>
+                        <h2>Error</h2>
+                        <p>`${error.message || "Error updating email"}`</p>
+                    </>
+                );
+                modalRef.current.open();
+            })
+
+    }, [verificationCode]);
+
+    // verifyemail() called when setVerificationCode is called.
+    useEffect(() => {
+        if (verificationCode)
+            verifyEmail()
+    }, [verificationCode, verifyEmail]);
 
     return (
         userAttr && (
@@ -127,10 +107,9 @@ const ProfilePage = ({ user, userAttr }) => {
                                 <div className="profile-info-detail">{user.username}</div>
                             </div>
                             <div className="profile-info">
-                                <div className="profile-info-title">Email</div>
+                                <div className="profile-info-title">{`Email (${userAttr.email_verified ? "Verified" : "Unverified"})`} </div>
                                 <input type="text" className="profile-info-detail" name="email" value={email} onChange={handleEmailChange} />
-                                <span className="verified">&nbsp;{userAttr.email_verified ? "Verified" : "Unverified"}</span>
-                                <div className="profile-info-button"><button onClick={handleEditEmail}>Edit</button>
+                                <div className="profile-info-button"><button onClick={handleEditEmail}>Save</button>
                                 </div>
                             </div>
                             <div className="profile-info">

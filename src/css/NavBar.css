@@ -1,62 +1,15 @@
-nav {
-  
-    display:flex;
-    margin: 10px;
-    padding:20px;
-    align-items: center;
-    background-color: #fff;
-    min-width:90%;
 
+.navbar {
+    justify-content: unset;
+}
+.navbar-brand {
+    margin-left: 10px;
 }
 
-nav a {
-    text-decoration:none;
+.navbar-brand{
+font-size:1.1rem;
 }
 
-nav .logo a{
-    text-align: left;
-    color: #333;
-    font-weight: 600;
-}
-
-nav .menu{
-    display:flex;
-
-    position:absolute;
-    right:20px;
-}
-nav.items{
-    display:flex;
-    margin:0 20px;
-}
-nav button {
-    color:#fff;
-    font-size: 0.8rem;
-    background-color:  #68B8C1;
-    margin:0 5px 0px 20px;
-    padding:10px 15px;
-    outline:none;
-    border:none;
-    border-radius: 5px;
-    cursor:pointer;
-}
-
-nav .greeting {
-    display:inline;
-    font-size: 1rem;
-    margin: 0;
-    padding:0;
-}
-nav .greeting a{
-    color: blue;
-    padding:0;
-}
-nav .greeting a:hover{
-    color: blue;
-    text-decoration: underline;
-    padding:0;
-}
-
-nav .profile {
-font-size:0.9rem;
+.navbar button {
+    
 }
