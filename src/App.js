@@ -15,8 +15,13 @@ function App() {
 
   const getUserData = useCallback(() => {
     const retrieveData = async () => {
-      const user = await Auth.currentAuthenticatedUser();
-      user ? setUser(user) : setUser(null);
+      try {
+        const user = await Auth.currentAuthenticatedUser();
+        user ? setUser(user) : setUser(null);
+      } catch (error) {
+        //user not authenticated.
+      }
+
     }
     retrieveData();
 
