@@ -1,24 +1,27 @@
 import React, { useState, useRef } from 'react';
+import { withRouter } from 'react-router-dom';
 import Modal from '../components/Modal';
 import '../css/ProfilePage.css';
 import { Auth } from 'aws-amplify';
 import { useEffect } from 'react';
 import { useCallback } from 'react';
 
-const ProfilePage = ({ user, userAttr }) => {
+const ProfilePage = ({ user, userAttr, history, handleSignOut }) => {
     const modalRef = useRef();
 
     const [email, setEmail] = useState(userAttr?.email);
     const [modalContent, setModalContent] = useState("");
     const [verificationCode, setVerificationCode] = useState("");
 
-    const handleEditEmail = (e) => {
-        e.preventDefault();
-        editEmail();
-    }
-
+    /*** EDIT EMAIL */
+    /*controlled component for email input box*/
     const handleEmailChange = (e) => {
         setEmail(e.target.value);
+    }
+
+    const handleSaveEmail = (e) => {
+        e.preventDefault();
+        editEmail();
     }
 
     const editEmail = async () => {
@@ -59,7 +62,7 @@ const ProfilePage = ({ user, userAttr }) => {
     const submitVerificationCode = async (event) => {
         event.preventDefault();
         setVerificationCode(event.target.verificationCode.value.trim());
-        // verificationCode change triggers editEmail()
+        // verificationCode change triggers editEmail() in useEffect();
     }
 
     const verifyEmail = useCallback(() => {
@@ -72,6 +75,7 @@ const ProfilePage = ({ user, userAttr }) => {
                     <>
                         <h2>Success</h2>
                         <p>Email has been successfully verified to {result.toLowerCase()}</p>
+                        <button onClick={() => modalRef.current.close()}>OK</button>
                     </>
                 );
                 modalRef.current.open();
@@ -80,6 +84,7 @@ const ProfilePage = ({ user, userAttr }) => {
                     <>
                         <h2>Error</h2>
                         <p>`${error.message || "Error updating email"}`</p>
+                        <button onClick={() => modalRef.current.close()}>OK</button>
                     </>
                 );
                 modalRef.current.open();
@@ -87,11 +92,67 @@ const ProfilePage = ({ user, userAttr }) => {
 
     }, [verificationCode]);
 
-    // verifyemail() called when setVerificationCode is called.
+    // verifyEmail() called when verificationCode is set.
     useEffect(() => {
         if (verificationCode)
             verifyEmail()
     }, [verificationCode, verifyEmail]);
+
+    /*** DELETE ACCOUNT ***/
+    const handleDeleteProfile = () => {
+        setModalContent(
+            <>
+                <h2>Attention!</h2>
+                <p>This will permanently delete your account. Continue?</p>
+                <button onClick={() => modalRef.current.close()}>Cancel</button>
+                <button onClick={deleteProfile}>Delete</button>
+            </>
+        );
+        modalRef.current.open();
+
+    }
+
+    const deleteProfile = () => {
+        user.deleteUser(function (err, result) {
+            if (err) {
+                alert(err);
+                return;
+            }
+            console.log('call result: ' + result);
+            history.push('/');
+            handleSignOut();
+
+            //setUser(null);
+            //history.push('/');
+        });
+    }
+
+
+
+    /*      MessageBox.confirm(
+              "This will permanently delete your account. Continue?",
+              "Attention!",
+              {
+                  confirmButtonText: "Delete",
+                  cancelButtonText: "Cancel",
+                  type: "warning"
+              }
+          )
+              .then(async () => {
+                  try {
+                      await this.props.user.deleteUser();
+                  } catch (err) {
+                      console.error(err);
+                  }
+              })
+              .catch(() => {
+                  Message({
+                      type: "info",
+                      message: "Delete canceled"
+                  });
+              });
+              */
+
 
     return (
         userAttr && (
@@ -109,7 +170,7 @@ const ProfilePage = ({ user, userAttr }) => {
                             <div className="profile-info">
                                 <div className="profile-info-title">{`Email (${userAttr.email_verified ? "Verified" : "Unverified"})`} </div>
                                 <input type="text" className="profile-info-detail" name="email" value={email} onChange={handleEmailChange} />
-                                <div className="profile-info-button"><button onClick={handleEditEmail}>Save</button>
+                                <div className="profile-info-button"><button onClick={handleSaveEmail}>Save</button>
                                 </div>
                             </div>
                             <div className="profile-info">
@@ -120,7 +181,7 @@ const ProfilePage = ({ user, userAttr }) => {
                             <div className="profile-info-delete">
                                 <div className="profile-info-title">Delete Profile</div>
                                 <div className="profile-info-detail">Sorry to see you go</div>
-                                <div className="profile-info-button"><button className="btn-delete">Delete</button></div>
+                                <div className="profile-info-button"><button className="btn-delete" onClick={handleDeleteProfile}>Delete</button></div>
 
                             </div>
                         </div>
@@ -134,4 +195,4 @@ const ProfilePage = ({ user, userAttr }) => {
     );
 };
 
-export default ProfilePage;
+export default withRouter(ProfilePage);

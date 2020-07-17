@@ -71,7 +71,7 @@ function App() {
         <Route exact path="/" component={ToDoListPage} />
         <Route
           path="/profile"
-          component={() => <ProfilePage user={user} userAttr={userAttr} />}
+          component={() => <ProfilePage user={user} userAttr={userAttr} handleSignOut={handleSignOut} />}
         />
       </Switch>
     </Router>;
