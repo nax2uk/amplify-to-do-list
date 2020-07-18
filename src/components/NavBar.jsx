@@ -22,7 +22,7 @@ const NavBar = () => {
                         <NavLink to="/profile">My Profile</NavLink>
                     </li>
                     <li className="nav-item">
-                        <NavLink to="/profile" onClick={signOut}>Sign Out</NavLink>
+                        <NavLink to="/" onClick={signOut}>Sign Out</NavLink>
                     </li>
                 </ul>
             </div>

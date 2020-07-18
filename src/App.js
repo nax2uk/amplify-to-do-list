@@ -1,7 +1,7 @@
 
 import React, { useEffect, useCallback, useContext } from 'react';
 import { Authenticator } from 'aws-amplify-react';
-import { BrowserRouter as Router, Route, Switch, withRouter } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import UserContext from './context/user/userContext';
 import ToDoListPage from './pages/ToDoListPage';
 import ProfilePage from './pages/ProfilePage';
@@ -10,7 +10,7 @@ import theme from './utils/theme';
 import { Hub } from 'aws-amplify';
 
 
-function App({ history }) {
+function App() {
   const { getUserData, user, setUser, getUserAttr } = useContext(UserContext);
 
   const handleAuth = ({ payload }) => {
@@ -45,10 +45,7 @@ function App({ history }) {
       <NavBar />
       <Switch>
         <Route exact path="/" component={ToDoListPage} />
-        <Route
-          path="/profile"
-          component={ProfilePage}
-        />
+        <Route exact path="/profile" component={ProfilePage} />
       </Switch>
     </Router>;
 }

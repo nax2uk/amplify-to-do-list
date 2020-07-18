@@ -1,38 +1,53 @@
 import React, { useState, useRef, useContext } from 'react';
-import { withRouter } from 'react-router-dom';
 import UserContext from '../context/user/userContext';
-//import useDidMountEffect from '../hooks/useDidMountEffect';
+import { useIsMount } from '../hooks/useIsMount';
 import Modal from '../components/Modal';
 import '../css/ProfilePage.css';
 import { useEffect } from 'react';
+import { UsernameAttributes } from 'aws-amplify-react';
 
-const ProfilePage = ({ history }) => {
+const ProfilePage = () => {
     const { signOut, userAttr, user, updateEmail, error, resetError, checkVerificationCode } = useContext(UserContext);
-
 
     const [updatedEmail, setUpdatedEmail] = useState(userAttr?.email);
     const [modalContent, setModalContent] = useState("");
     const [verificationCode, setVerificationCode] = useState("");
     const modalRef = useRef();
+    const isMount = useIsMount();
     /*** EDIT EMAIL */
 
     /*controlled component for email input box*/
     const handleEmailChange = (e) => {
         setUpdatedEmail(e.target.value);
     }
-
+    const handleEditEmail = (e) => {
+        setModalContent(
+            <>
+                <h3>Enter new Email</h3>
+                <form onSubmit={submitNewEmail}>
+                    <label htmlFor="newEmail">Enter New Email</label>
+                    <input type="text" name="newEmail" defaultValue="" />
+                    <button >Submit</button>
+                </form>
+            </>
+        )
+        modalRef.current.open();
+    }
     /** when saved button is clicked for email */
-    const handleSaveEmail = (e) => {
+    const submitNewEmail = (e) => {
         e.preventDefault();
-        updateEmail(updatedEmail);
+        setUpdatedEmail(e.target.newEmail.value);
+        updateEmail(e.target.newEmail.value);
+
+        setModalContent("");
         if (!error) {
             setModalContent(
                 <>
                     <h3>Verification code has been sent to {updatedEmail} </h3>
                     <form onSubmit={submitVerificationCode}>
                         <label htmlFor="verificationCode">Enter Verification Code</label>
-                        <input type="text" name="verificationCode" />
-                        <button>Submit</button>
+                        <input type="text" name="verificationCode" placeholder="" ></input>
+                        <button onSubmit={() => { modalRef.current.close(); setModalContent("") }}>Submit</button>
                     </form>
                 </>
             )
@@ -48,24 +63,25 @@ const ProfilePage = ({ history }) => {
     // Modal dialog appears when verification code is submitted.
     useEffect(() => {
         if (verificationCode) {
-            checkVerificationCode().then(result => {
+            const result = checkVerificationCode(verificationCode);
+            console.log(result);
+            if (!error) {
                 setModalContent(
                     <>
                         <h2>Success</h2>
-                        <p>Email has been successfully verified to {result.toLowerCase()}</p>
+                        <p>Email has been successfully verified to {updatedEmail}</p>
                         <button onClick={() => modalRef.current.close()}>OK</button>
                     </>
                 );
                 modalRef.current.open();
-            });
-
+            };
         }
         // eslint-disable-next-line
     }, [verificationCode]);
 
     /** Modal appears if any error **/
     useEffect(() => {
-        if (!error) {
+        if (!isMount && !error) {
             setModalContent(
                 <>
                     <h2>Error</h2>
@@ -77,7 +93,8 @@ const ProfilePage = ({ history }) => {
             resetError();
         }
         // eslint-disable-next-line
-    }, [error, resetError]);
+    }, [error]);
+
 
     /*** DELETE ACCOUNT ***/
     const handleDeleteProfile = () => {
@@ -100,29 +117,10 @@ const ProfilePage = ({ history }) => {
                 return;
             }
             console.log('call result: ' + result);
-            history.push('/');
             signOut();
         });
     }
 
-    // call this before first render
-
-    /* useDidMountEffect(() => {
-         if (!error) {
-             setModalContent(
-                 <>
-                     <h2>Error</h2>
-                     <p>error</p>
-                     <button onClick={() => modalRef.current.close()}>OK</button>
-                 </>
-             );
-             modalRef.current.open();
-             resetError();
-         }
-     }, [error]);
-     */
-
-    useEffect(() => { }, []);
     return (
         userAttr && (
             <>
@@ -138,8 +136,8 @@ const ProfilePage = ({ history }) => {
                             </div>
                             <div className="profile-info">
                                 <div className="profile-info-title">{`Email (${userAttr.email_verified ? "Verified" : "Unverified"})`} </div>
-                                <input type="text" className="profile-info-detail" name="email" value={updatedEmail} onChange={handleEmailChange} />
-                                <div className="profile-info-button"><button onClick={handleSaveEmail}>Save</button>
+                                <div className="profile-info-detail">{userAttr.email}</div>
+                                <div className="profile-info-button"><button onClick={handleEditEmail}>Edit</button>
                                 </div>
                             </div>
                             <div className="profile-info">
@@ -164,4 +162,4 @@ const ProfilePage = ({ history }) => {
     );
 };
 
-export default withRouter(ProfilePage);
+export default ProfilePage;

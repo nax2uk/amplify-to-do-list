@@ -68,7 +68,7 @@ const UserState = props => {
     }, []);
 
     const getUserAttr = useCallback(() => {
-        if (state.user !== null && state.userAttr === null) {
+        if (state.user !== null) {
             Auth.userAttributes(state.user)
                 .then(attrArr => {
                     const attrObj = Auth.attributesToObject(attrArr);
@@ -80,7 +80,7 @@ const UserState = props => {
                     })
                 })
         }
-    }, [state.user, state.userAttr]);
+    }, [state.user]);
 
     const updateEmail = async (email) => {
         try {
@@ -107,28 +107,26 @@ const UserState = props => {
     };
 
 
-    const checkVerificationCode = useCallback((verificationCode) => {
-        const verifyCode = async () => {
-            try {
-                const result = await Auth.verifyCurrentUserAttributeSubmit(
-                    'email',
-                    verificationCode
-                )
-                return result;
-            } catch (error) {
+    const checkVerificationCode = (verificationCode) => {
+        Auth.verifyCurrentUserAttributeSubmit(
+            'email',
+            verificationCode
+        )
+            .then(result => {
+                if (result === "SUCCESS") {
+                    getUserAttr();
+                }
+
+            })
+            .catch(error => {
                 dispatch({
                     type: ERROR_VERIFICATION_CODE,
                     payload: {
                         error,
                     }
                 })
-                return
-            }
-        }
-        verifyCode();
-
-
-    }, []);
+            });
+    };
 
 
     const signOut = async () => {
