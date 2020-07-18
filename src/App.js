@@ -1,12 +1,21 @@
 
-import React from 'react';
-import { withAuthenticator } from 'aws-amplify-react';
+import React, { useState } from 'react';
+import { Authenticator } from 'aws-amplify-react';
 import ToDoList from './components/ToDoList';
+import NavBar from './components/Navbar';
 import theme from './utils/theme';
 
 
 function App() {
-  return <ToDoList />;
+  const [user, setUser] = useState(null);
+  return !user ?
+    <Authenticator theme={theme} />
+    :
+    <>
+      <NavBar />
+      <ToDoList />;
+    </>
+
 }
 
-export default withAuthenticator(App, true, [], null, theme);
+export default App;

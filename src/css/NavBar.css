@@ -1,0 +1,19 @@
+.navbar {
+    justify-content: unset;
+}
+.navbar-brand {
+    margin-left: 10px;
+}
+
+.navbar-brand{
+font-size:1.1rem;
+}
+
+.navbar button {
+    
+}
+@media screen and (max-width: 450px){
+    .navbar-brand{
+        font-size:1rem;
+    }
+}
