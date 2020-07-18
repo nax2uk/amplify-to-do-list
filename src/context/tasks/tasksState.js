@@ -14,6 +14,7 @@ import {
 const TasksState = props => {
     const initialState = {
         /*** ARRAY TASKS ***/
+        isLoading: true,
         arrTasks: [],
         err: null,
     }
@@ -23,6 +24,7 @@ const TasksState = props => {
     const initArrTasks = useCallback(() => {
 
         const initArr = async () => {
+
             try {
                 const arr = await api.getTasks();
                 dispatch({
@@ -111,6 +113,7 @@ const TasksState = props => {
         <TasksContext.Provider
             value={{
                 arrTasks: state.arrTasks,
+                isLoading: state.isLoading,
                 editTask,
                 initArrTasks,
                 removeTask,

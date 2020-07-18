@@ -44,4 +44,4 @@ const NewToDoForm = () => {
     );
 };
 
-export default NewToDoForm;
+export default React.memo(NewToDoForm);

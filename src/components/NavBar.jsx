@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { NavLink, Link } from 'react-router-dom';
+import UserContext from '../context/user/userContext';
 import '../css/NavBar.css';
-const NavBar = ({ handleSignOut }) => {
+const NavBar = () => {
+
+    const { signOut } = useContext(UserContext);
     return (
 
         <nav className="navbar navbar-expand-xxl navbar-light bg-light">
@@ -19,7 +22,7 @@ const NavBar = ({ handleSignOut }) => {
                         <NavLink to="/profile">My Profile</NavLink>
                     </li>
                     <li className="nav-item">
-                        <NavLink to="/profile" onClick={handleSignOut}>Sign Out</NavLink>
+                        <NavLink to="/profile" onClick={signOut}>Sign Out</NavLink>
                     </li>
                 </ul>
             </div>

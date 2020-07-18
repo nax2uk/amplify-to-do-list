@@ -1,76 +1,54 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useContext } from 'react';
 import { withRouter } from 'react-router-dom';
+import UserContext from '../context/user/userContext';
+//import useDidMountEffect from '../hooks/useDidMountEffect';
 import Modal from '../components/Modal';
 import '../css/ProfilePage.css';
-import { Auth } from 'aws-amplify';
 import { useEffect } from 'react';
-import { useCallback } from 'react';
 
-const ProfilePage = ({ user, userAttr, history, handleSignOut }) => {
-    const modalRef = useRef();
+const ProfilePage = ({ history }) => {
+    const { signOut, userAttr, user, updateEmail, error, resetError, checkVerificationCode } = useContext(UserContext);
 
-    const [email, setEmail] = useState(userAttr?.email);
+
+    const [updatedEmail, setUpdatedEmail] = useState(userAttr?.email);
     const [modalContent, setModalContent] = useState("");
     const [verificationCode, setVerificationCode] = useState("");
-
+    const modalRef = useRef();
     /*** EDIT EMAIL */
+
     /*controlled component for email input box*/
     const handleEmailChange = (e) => {
-        setEmail(e.target.value);
+        setUpdatedEmail(e.target.value);
     }
 
+    /** when saved button is clicked for email */
     const handleSaveEmail = (e) => {
         e.preventDefault();
-        editEmail();
-    }
-
-    const editEmail = async () => {
-        try {
-            const updatedAttr = {
-                email,
-            }
-            const result = await Auth.updateUserAttributes(user, updatedAttr);
-            console.log(result);
-            if (result === "SUCCESS") {
-                sendVerificationCode('email');
-            }
-        } catch (error) {
-            console.error(error);
+        updateEmail(updatedEmail);
+        if (!error) {
             setModalContent(
-                <h3>`${error.message || "Error updating email"}`</h3>
-
+                <>
+                    <h3>Verification code has been sent to {updatedEmail} </h3>
+                    <form onSubmit={submitVerificationCode}>
+                        <label htmlFor="verificationCode">Enter Verification Code</label>
+                        <input type="text" name="verificationCode" />
+                        <button>Submit</button>
+                    </form>
+                </>
             )
             modalRef.current.open();
         }
     }
-
-    const sendVerificationCode = async attr => {
-        await Auth.verifyCurrentUserAttribute(attr);
-        setModalContent(
-            <>
-                <h3>Verification code has been sent to {email} </h3>
-                <form onSubmit={submitVerificationCode}>
-                    <label htmlFor="verificationCode">Enter Verification Code</label>
-                    <input type="text" name="verificationCode" />
-                    <button>Submit</button>
-                </form>
-            </>
-        )
-        modalRef.current.open();
-    };
-
+    /* when verificationCode is submitted */
     const submitVerificationCode = async (event) => {
         event.preventDefault();
         setVerificationCode(event.target.verificationCode.value.trim());
         // verificationCode change triggers editEmail() in useEffect();
     }
-
-    const verifyEmail = useCallback(() => {
-        Auth.verifyCurrentUserAttributeSubmit(
-            'email',
-            verificationCode
-        )
-            .then(result => {
+    // Modal dialog appears when verification code is submitted.
+    useEffect(() => {
+        if (verificationCode) {
+            checkVerificationCode().then(result => {
                 setModalContent(
                     <>
                         <h2>Success</h2>
@@ -79,24 +57,27 @@ const ProfilePage = ({ user, userAttr, history, handleSignOut }) => {
                     </>
                 );
                 modalRef.current.open();
-            }).catch((error) => {
-                setModalContent(
-                    <>
-                        <h2>Error</h2>
-                        <p>`${error.message || "Error updating email"}`</p>
-                        <button onClick={() => modalRef.current.close()}>OK</button>
-                    </>
-                );
-                modalRef.current.open();
-            })
+            });
 
+        }
+        // eslint-disable-next-line
     }, [verificationCode]);
 
-    // verifyEmail() called when verificationCode is set.
+    /** Modal appears if any error **/
     useEffect(() => {
-        if (verificationCode)
-            verifyEmail()
-    }, [verificationCode, verifyEmail]);
+        if (!error) {
+            setModalContent(
+                <>
+                    <h2>Error</h2>
+                    <p>error</p>
+                    <button onClick={() => modalRef.current.close()}>OK</button>
+                </>
+            );
+            modalRef.current.open();
+            resetError();
+        }
+        // eslint-disable-next-line
+    }, [error, resetError]);
 
     /*** DELETE ACCOUNT ***/
     const handleDeleteProfile = () => {
@@ -120,48 +101,36 @@ const ProfilePage = ({ user, userAttr, history, handleSignOut }) => {
             }
             console.log('call result: ' + result);
             history.push('/');
-            handleSignOut();
-
-            //setUser(null);
-            //history.push('/');
+            signOut();
         });
     }
 
+    // call this before first render
 
+    /* useDidMountEffect(() => {
+         if (!error) {
+             setModalContent(
+                 <>
+                     <h2>Error</h2>
+                     <p>error</p>
+                     <button onClick={() => modalRef.current.close()}>OK</button>
+                 </>
+             );
+             modalRef.current.open();
+             resetError();
+         }
+     }, [error]);
+     */
 
-    /*      MessageBox.confirm(
-              "This will permanently delete your account. Continue?",
-              "Attention!",
-              {
-                  confirmButtonText: "Delete",
-                  cancelButtonText: "Cancel",
-                  type: "warning"
-              }
-          )
-              .then(async () => {
-                  try {
-                      await this.props.user.deleteUser();
-                  } catch (err) {
-                      console.error(err);
-                  }
-              })
-              .catch(() => {
-                  Message({
-                      type: "info",
-                      message: "Delete canceled"
-                  });
-              });
-              */
-
-
+    useEffect(() => { }, []);
     return (
         userAttr && (
             <>
                 <div className="profile-container">
                     <div className="profile-box">
                         <div className="profile-header">
-                            Profile
-                    </div>
+                            Profile{console.log(userAttr.email)}
+                        </div>
                         <div className="profile-content">
                             <div className="profile-info">
                                 <div className="profile-info-title">Username</div>
@@ -169,7 +138,7 @@ const ProfilePage = ({ user, userAttr, history, handleSignOut }) => {
                             </div>
                             <div className="profile-info">
                                 <div className="profile-info-title">{`Email (${userAttr.email_verified ? "Verified" : "Unverified"})`} </div>
-                                <input type="text" className="profile-info-detail" name="email" value={email} onChange={handleEmailChange} />
+                                <input type="text" className="profile-info-detail" name="email" value={updatedEmail} onChange={handleEmailChange} />
                                 <div className="profile-info-button"><button onClick={handleSaveEmail}>Save</button>
                                 </div>
                             </div>

@@ -11,6 +11,7 @@ const tasksReducer = (state, action) => {
             return {
                 ...state,
                 arrTasks: action.payload.arr,
+                isLoading: false,
             }
         case REMOVE_TASK:
             return {

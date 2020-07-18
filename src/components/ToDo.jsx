@@ -7,7 +7,9 @@ const Todo = ({ task }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [currTask, setCurrTask] = useState(task.task);
     const [err, setErr] = useState("");
-    const tasksContext = useContext(TasksContext);
+
+    const { editTask, removeTask } = useContext(TasksContext);
+
     const handleChange = (e) => {
         setCurrTask(e.target.value);
     }
@@ -17,16 +19,16 @@ const Todo = ({ task }) => {
             setErr("Please add a description for your updated task!");
         }
         else {
-            tasksContext.editTask({ id: task.id, task: currTask });
+            editTask({ id: task.id, task: currTask });
             setIsEditing(false);
         }
 
     }
     const handleToggle = () => {
-        tasksContext.editTask({ id: task.id, completed: !task.completed });
+        editTask({ id: task.id, completed: !task.completed });
     }
     const handleRemove = () => {
-        tasksContext.removeTask(task.id);
+        removeTask(task.id);
     }
     const toggleEditForm = () => {
         setIsEditing(!isEditing);
@@ -49,7 +51,7 @@ const Todo = ({ task }) => {
                     </>
                     :
                     <li className='Todo-task' onClick={handleToggle}>
-                        {task.task}
+                        {task.task}{console.log(task.task)}
                     </li>
                 }
                 <div className='Todo-buttons'>
@@ -71,4 +73,4 @@ const Todo = ({ task }) => {
     );
 };
 
-export default Todo;
+export default React.memo(Todo);
